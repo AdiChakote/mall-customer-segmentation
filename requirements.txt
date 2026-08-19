@@ -5,3 +5,6 @@ scikit-learn
 scipy
 jupyter
 ipykernel
+streamlit
+joblib
+plotly
