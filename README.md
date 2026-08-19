@@ -8,7 +8,15 @@ This project performs customer segmentation using three popular unsupervised mac
 - Hierarchical (Agglomerative) Clustering
 - DBSCAN (Density-Based Spatial Clustering)
 
-The goal is to identify groups of customers based on their purchasing behavior so businesses can design targeted marketing strategies and improve customer engagement.
+The goal is to identify groups of customers based on their purchasing behavior so businesses can design targeted marketing strategies and improve customer engagement. The final model is deployed as an interactive web app.
+
+---
+
+## Live Demo
+
+**Try it here:** [[ https://mall-customer-segmentation-adi.streamlit.app/ ]] 
+
+Enter a customer's Annual Income and Spending Score and the app predicts which segment they belong to, with an interactive visualization showing where they fall among existing customers.
 
 ---
 
@@ -39,9 +47,10 @@ Target variable is not available because this is an unsupervised learning proble
 9. Cluster Analysis
 10. Hierarchical Clustering
 11. Dendrogram Visualization
-12. DBSCAN Clustering
+12. DBSCAN Clustering (eps selected via K-Distance Graph)
 13. Comparison of Clustering Algorithms
-14. Business Insights
+14. Business Insights & Cluster Naming
+15. Model Deployment (Streamlit)
 
 ---
 
@@ -53,6 +62,8 @@ Target variable is not available because this is an unsupervised learning proble
 - Matplotlib
 - Scikit-learn
 - SciPy
+- Streamlit
+- Plotly
 
 ---
 
@@ -76,7 +87,7 @@ Target variable is not available because this is an unsupervised learning proble
 
 ### DBSCAN
 
-- Parameters:
+- Parameters (`eps` selected via K-Distance Graph):
   - eps = 0.5
   - min_samples = 5
 
@@ -84,6 +95,7 @@ Results:
 
 - 2 Clusters
 - 8 Noise Points
+- Silhouette Score (noise excluded): **0.3876**
 
 ---
 
@@ -123,7 +135,7 @@ Customer segmentation obtained using Agglomerative Hierarchical Clustering.
 
 ### DBSCAN Clustering
 
-DBSCAN identified dense customer groups and automatically detected noise (outliers).
+DBSCAN identified dense customer groups and automatically detected noise (outliers), with `eps` chosen using a K-Distance Graph rather than an arbitrary value.
 
 ![DBSCAN Clustering](images/DBSCAN_Customer_Segmentation.png)
 
@@ -133,7 +145,7 @@ DBSCAN identified dense customer groups and automatically detected noise (outlie
 | ----------------------- | -----------------: | -----------: | ---------------: |
 | K-Means                 |                  5 |            0 |           0.5547 |
 | Hierarchical Clustering |                  5 |            0 |           0.5538 |
-| DBSCAN                  |                  2 |            8 |              N/A |
+| DBSCAN                  |                  2 |            8 |           0.3876 |
 
 ---
 
@@ -141,75 +153,72 @@ DBSCAN identified dense customer groups and automatically detected noise (outlie
 
 - K-Means achieved the highest Silhouette Score.
 - Hierarchical Clustering produced results very similar to K-Means.
-- DBSCAN automatically detected dense customer groups and identified outliers.
-- K-Means provided the most interpretable customer segmentation for this dataset.
+- DBSCAN's `eps` was selected using a K-Distance Graph rather than an arbitrary value; it still underperforms K-Means/Hierarchical here since this dataset's clusters are roughly convex, which favors centroid- and linkage-based methods.
+- K-Means provided the most interpretable customer segmentation for this dataset and was used for the final deployed model.
 
 ---
 
 ## Business Insights
 
-The analysis identified multiple customer segments such as:
+Using K-Means, five customer segments were identified and named based on their income/spending centroids:
 
-- Premium Customers
-- Average Customers
-- High Income - Low Spending Customers
-- Low Income - High Spending Customers
-- Low Value Customers
+- **Target** (High Income, High Spending) — core high-value customers; prioritize retention via loyalty programs.
+- **Careful** (High Income, Low Spending) — highest untapped revenue potential; candidates for targeted promotions.
+- **Careless** (Low Income, High Spending) — price-sensitive but highly engaged; good fit for value bundles.
+- **Sensible** (Low Income, Low Spending) — lower priority for active marketing spend.
+- **Standard** (Moderate Income, Moderate Spending) — largest, most "average" group; broad marketing is most efficient here.
 
-These customer groups can help businesses design personalized marketing campaigns, loyalty programs, and promotional strategies.
+These segments help businesses design personalized marketing campaigns, loyalty programs, and promotional strategies.
 
 ---
 
 ## Project Structure
 
-```
-
 Mall-Customer-Segmentation/
-
 │
-
 ├── data/
-
 │ └── Mall_Customers.csv
-
 │
-
 ├── images/
-
 │ ├── Elbow_Method.png
-
 │ ├── Hierarchical_Dendrogram.png
-
-│ ├── KMeans_Clusters.png
-
+│ ├── Customer_Segmentation.png
+│ ├── Hierarchical_Customer_Segmentation.png
 │ ├── DBSCAN_Customer_Segmentation.png
-
+│ ├── DBSCAN_KDistance.png
 │ └── ...
-
 │
-
+├── models/
+│ ├── kmeans_model.pkl
+│ └── scaler.pkl
+│
 ├── notebooks/
-
 │ └── Mall_Customer_Segmentation.ipynb
-
 │
-
+├── app.py
 ├── README.md
-
 ├── requirements.txt
-
 └── .gitignore
 
+
+---
+
+## How to Run Locally
+
+```bash
+git clone https://github.com/AdiChakote/mall-customer-segmentation.git
+cd mall-customer-segmentation
+pip install -r requirements.txt
+streamlit run app.py
 ```
 
 ---
 
 ## Future Improvements
 
-- Hyperparameter tuning for DBSCAN
-- Cluster profiling with additional customer attributes
-- Interactive visualizations using Plotly
-- Deploy the project as a web application
+- Hyperparameter tuning for DBSCAN using additional validation metrics
+- Cluster profiling with additional customer attributes (e.g. Age, Gender)
+- Extend clustering to 3D (Age + Income + Spending) or PCA-reduced features
 
 ---
 
